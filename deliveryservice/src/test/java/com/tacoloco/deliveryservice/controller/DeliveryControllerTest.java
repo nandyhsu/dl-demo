@@ -1,5 +1,7 @@
 package com.tacoloco.deliveryservice.controller;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,10 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -30,6 +35,7 @@ public class DeliveryControllerTest {
 	@MockBean
 	private DeliverySpringDataRepository deliveryRepo;
 	
+	/***getAllDelivery() testcases ***/
 	@Test
 	public void whenGetAllDeliveryfor3_returnAllDelivery() throws Exception{
 		
@@ -76,6 +82,7 @@ public class DeliveryControllerTest {
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), true);
 	}
 	
+	//when there are no deliveries, return an empty list
 	@Test 
 	public void whenGetAllDeliveryfor0_returnEmptyList() throws Exception {
 		Mockito.when(deliveryRepo.findAll()).thenReturn(new ArrayList<>());
@@ -91,5 +98,91 @@ public class DeliveryControllerTest {
 
 	}
 	
+	
+	/*** create Delivery Test Cases  ***/
+	//when a new delivery is created, return the URI to the resource
+	@Test
+	public void whenCreateDelivery_returnCreatedResponse() throws Exception {
+		Delivery mockDelivery = new Delivery(1L, "John", "Doe", "21 Rosebank Alley", "Apt 23", "Asheville", "NC", "14234", "US");
+		Mockito.when(deliveryRepo.save(Mockito.any(Delivery.class))).thenReturn(mockDelivery);
+		
+		String jsonStr = "{\"id\" : 1,\r\n" + 
+				"	\"firstName\" : \"John\",\r\n" + 
+				"	\"lastName\" : \"Doe\",\r\n" + 
+				"	\"addressLine1\" : \"21 Rosebank Alley\",\r\n" + 
+				"	\"addressLine2\" : \"Apt 23\",\r\n" + 
+				"	\"city\" : \"Asheville\",\r\n" + 
+				"	\"state\" : \"NC\",\r\n" + 
+				"	\"zipcode\" : \"14234\",\r\n" + 
+				"	\"country\" : \"US\"}";
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/delivery")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(jsonStr)
+				.contentType(MediaType.APPLICATION_JSON);
+		
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response= result.getResponse();
+		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+		assertEquals("http://localhost/delivery/1", response.getHeader(HttpHeaders.LOCATION));
+	}	
+
+	/*** update Delivery Test Case ***/
+	//when a delivery is successfully updated, return the URI to the resource
+	@Test
+	public void whenUpdateDelivery_returnCreatedResponse() throws Exception{
+		Delivery mockDelivery = new Delivery(1L, "John", "Doe", "21 Rosebank Alley", "Apt 23", "Asheville", "NC", "14234", "US");
+		
+		Mockito.when(deliveryRepo.existsById(Mockito.any(Long.class))).thenReturn(true);
+		Mockito.when(deliveryRepo.save(Mockito.any(Delivery.class))).thenReturn(mockDelivery);
+		
+		String jsonStr = "{\"id\" : 1,\r\n" + 
+				"	\"firstName\" : \"John\",\r\n" + 
+				"	\"lastName\" : \"Doe\",\r\n" + 
+				"	\"addressLine1\" : \"21 Rosebank Alley\",\r\n" + 
+				"	\"addressLine2\" : \"Apt 23\",\r\n" + 
+				"	\"city\" : \"Asheville\",\r\n" + 
+				"	\"state\" : \"NC\",\r\n" + 
+				"	\"zipcode\" : \"14234\",\r\n" + 
+				"	\"country\" : \"US\"}";
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/delivery/1")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(jsonStr)
+				.contentType(MediaType.APPLICATION_JSON);
+		
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response= result.getResponse();
+		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+		assertEquals("http://localhost/delivery/1", response.getHeader(HttpHeaders.LOCATION));
+	}
+	
+	//when a delivery doesn't exist for update, return http conflict response
+	@Test
+	public void whenUpdateDelivery_returnConflictResponse() throws Exception{
+		Delivery mockDelivery = new Delivery(1L, "John", "Doe", "21 Rosebank Alley", "Apt 23", "Asheville", "NC", "14234", "US");
+		
+		Mockito.when(deliveryRepo.existsById(Mockito.any(Long.class))).thenReturn(false);
+		Mockito.when(deliveryRepo.save(Mockito.any(Delivery.class))).thenReturn(mockDelivery);
+		
+		String jsonStr = "{\"id\" : 1,\r\n" + 
+				"	\"firstName\" : \"John\",\r\n" + 
+				"	\"lastName\" : \"Doe\",\r\n" + 
+				"	\"addressLine1\" : \"21 Rosebank Alley\",\r\n" + 
+				"	\"addressLine2\" : \"Apt 23\",\r\n" + 
+				"	\"city\" : \"Asheville\",\r\n" + 
+				"	\"state\" : \"NC\",\r\n" + 
+				"	\"zipcode\" : \"14234\",\r\n" + 
+				"	\"country\" : \"US\"}";
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/delivery/1")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(jsonStr)
+				.contentType(MediaType.APPLICATION_JSON);
+		
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response= result.getResponse();
+		assertEquals(HttpStatus.CONFLICT.value(), response.getStatus());
+	}
 	
 }

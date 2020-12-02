@@ -2,6 +2,7 @@ package com.tacoloco.deliveryservice.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -10,7 +11,7 @@ import javax.persistence.Table;
 public class Delivery {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
 	
 	private String firstName;
@@ -24,6 +25,19 @@ public class Delivery {
 	
 	protected Delivery() {
 		super();
+	}
+	
+	public Delivery(Delivery d) {
+		super();
+		this.firstName = d.firstName;
+		this.lastName = d.lastName;
+		this.addressLine1 = d.addressLine1;
+		this.addressLine2 = d.addressLine2;
+		this.city = d.city;
+		this.state = d.state;
+		this.zipcode = d.zipcode;
+		this.country = d.country;
+		
 	}
 	
 	public Delivery(String firstName, String lastName, String addressLine1, String addressLine2, String city,
@@ -55,6 +69,10 @@ public class Delivery {
 
 	public Long getId() {
 		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	public String getFirstName() {
