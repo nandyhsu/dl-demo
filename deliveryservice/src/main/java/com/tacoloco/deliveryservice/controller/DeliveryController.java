@@ -24,8 +24,8 @@ public class DeliveryController {
 	@Autowired
 	private DeliverySpringDataRepository deliveryRepository;
 	
-	//Get all deliveries
-	//Not recommended to do this. Would run into issues with large data sets. Pagination would be the way to go.
+	//get all deliveries
+	//not recommended to do this. Would run into issues with large data sets. Pagination would be the way to go for large applications.
 	@GetMapping("/delivery")
 	public List<Delivery> getAllDelivery(){
 		return deliveryRepository.findAll();
@@ -43,7 +43,7 @@ public class DeliveryController {
 		return ResponseEntity.ok(delivery.get());
 	}
 	
-	//Create new delivery
+	//create new delivery
 	@PostMapping("/delivery")
 	public ResponseEntity<String> createDelivery(@RequestBody Delivery delivery){
 		
@@ -56,7 +56,7 @@ public class DeliveryController {
 	}
 	
 	
-	//Update an existing delivery
+	//update an existing delivery
 	@PutMapping("/delivery/{id}")
 	public ResponseEntity<String> updateDelivery(@RequestBody Delivery delivery, @PathVariable Long id){
 		boolean exists = deliveryRepository.existsById(id);

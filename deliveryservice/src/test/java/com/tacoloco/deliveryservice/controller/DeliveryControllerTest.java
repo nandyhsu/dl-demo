@@ -51,7 +51,8 @@ public class DeliveryControllerTest {
 		
 		
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-	
+		MockHttpServletResponse response = result.getResponse();
+
 		String expected = "[{\"id\" : 1,\r\n" + 
 				"	\"firstName\" : \"John\",\r\n" + 
 				"	\"lastName\" : \"Doe\",\r\n" + 
@@ -80,7 +81,8 @@ public class DeliveryControllerTest {
 				"	\"zipcode\" : \"14234\",\r\n" + 
 				"	\"country\" : \"US\"}]";
 	
-		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), true);
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		JSONAssert.assertEquals(expected, response.getContentAsString(), true);
 	}
 	
 	//when there are no deliveries, return an empty list
@@ -93,9 +95,10 @@ public class DeliveryControllerTest {
 		
 		
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-	
+		MockHttpServletResponse response = result.getResponse();
 		String expected = "[]";
-		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), true);
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		JSONAssert.assertEquals(expected, response.getContentAsString(), true);
 
 	}
 	
