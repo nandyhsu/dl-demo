@@ -3,6 +3,7 @@ package com.tacoloco.deliveryservice.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +26,7 @@ class DeliveryDataRepositoryTest {
 	private DeliverySpringDataRepository deliveryRepo;
 	
 	
-	/*** findAll() test cases ***/
-	
+	/******************* findAll() test cases ***************/
 	//When 3 deliveries exist in the database, return all 3
 	@Test
 	@DirtiesContext
@@ -54,7 +54,18 @@ class DeliveryDataRepositoryTest {
 		assertEquals(resultList.isEmpty(), true);
 	}
 	
-	/*** save() test cases ***/
+	/******************* findById() test cases ***************/
+	//find an existing delivery by, return delivery if it exists
+	@Test
+	@DirtiesContext
+	void whenFindById_returnDelivery() {
+		Delivery d3 = new Delivery("Molly", "Mason", "8163 2nd Dr.", "Unit 432", "Southfield", "MI", "14234", "US");
+		em.persistAndFlush(d3);
+		Optional<Delivery> result = deliveryRepo.findById(d3.getId());
+		assertEquals(d3, result.get());
+	}
+	
+	/******************* save() test cases ***************/
 	//when a save on a new resource is successful, check if the delivery is in database
 	@Test
 	@DirtiesContext
@@ -66,8 +77,8 @@ class DeliveryDataRepositoryTest {
 		assertEquals(actual.equals(d1), true);
 	}
 	
-	@Test
 	//when a save on an existing delivery is successful, check if delivery is updated in database
+	@Test
 	@DirtiesContext
 	void whenSaveOnExistingResource_returnSuccessIfUpdated() {
 		Delivery d1 = new Delivery("John", "Doe", "21 Rosebank Alley", "Apt 23", "Asheville", "NC", "14234", "US");
@@ -78,7 +89,17 @@ class DeliveryDataRepositoryTest {
 		
 		Delivery actual = em.find(Delivery.class, d1.getId());
 		assertEquals(actual.equals(d2), true);
-		
+	}
+
+	/******************* deleteById() test cases ***************/
+	//when a delete on an existing delivery is successful, check if delivery no longer exists
+	@Test
+	void whenDeleteOnExisting_returnSuccessIfNoLongerExists() {
+		Delivery d1 = new Delivery("John", "Doe", "21 Rosebank Alley", "Apt 23", "Asheville", "NC", "14234", "US");
+		em.persistAndFlush(d1);
+		deliveryRepo.deleteById(d1.getId());
+		Delivery actual = em.find(Delivery.class, d1.getId());
+		assertEquals(actual == null, true);
 	}
 
 }

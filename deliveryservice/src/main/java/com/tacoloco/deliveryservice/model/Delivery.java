@@ -27,19 +27,6 @@ public class Delivery {
 		super();
 	}
 	
-	public Delivery(Delivery d) {
-		super();
-		this.firstName = d.firstName;
-		this.lastName = d.lastName;
-		this.addressLine1 = d.addressLine1;
-		this.addressLine2 = d.addressLine2;
-		this.city = d.city;
-		this.state = d.state;
-		this.zipcode = d.zipcode;
-		this.country = d.country;
-		
-	}
-	
 	public Delivery(String firstName, String lastName, String addressLine1, String addressLine2, String city,
 			String state, String zipcode, String country) {
 		super();

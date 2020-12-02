@@ -2,10 +2,12 @@ package com.tacoloco.deliveryservice.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +29,18 @@ public class DeliveryController {
 	@GetMapping("/delivery")
 	public List<Delivery> getAllDelivery(){
 		return deliveryRepository.findAll();
+	}
+	
+	//get one delivery by id
+	@GetMapping("/delivery/{id}")
+	public ResponseEntity<Delivery> getDelivery(@PathVariable Long id){
+		
+		Optional<Delivery> delivery = deliveryRepository.findById(id);
+		if(!delivery.isPresent()) {
+			return ResponseEntity.noContent().build();
+		}
+		
+		return ResponseEntity.ok(delivery.get());
 	}
 	
 	//Create new delivery
@@ -56,5 +70,17 @@ public class DeliveryController {
 		URI loc = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
 		
 		return ResponseEntity.created(loc).build();
+	}
+	
+	//delete an existing delivery
+	@DeleteMapping("/delivery/{id}")
+	public ResponseEntity<String> deleteDelivery(@PathVariable Long id){
+		boolean exists = deliveryRepository.existsById(id);
+		if(!exists) {
+			return new ResponseEntity<String>("Delivery does not exist!", HttpStatus.CONFLICT);
+		}
+		
+		deliveryRepository.deleteById(id);
+		return ResponseEntity.noContent().build();
 	}
 }
