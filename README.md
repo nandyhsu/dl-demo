@@ -81,18 +81,18 @@ Response Status: 204 No Content
 Request Body: Delivery in JSON  
 
 Response Status: 201 Created  
-Response Body: URI to view created delivery  
+Response Location Header: URI to view created delivery  
 
 **PUT /delivery/{id}**  
 Request Body: Delivery in JSON  
 
 _when a matching id is found_  
 Response Status: 201 Created  
-Response Body: URI to view created delivery  
+Response Location Header: URI to view created delivery  
 
 _when NO matching id is found_  
 Response Status: 409 Conflict  
-Respone Body: "Delivery does not exist!"  
+Response Body: "Delivery does not exist!"  
 
 
 **DELETE /delivery/{id}**  
