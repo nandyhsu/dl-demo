@@ -4,12 +4,14 @@ This is a Spring Boot project with Maven as the build tool, developed on Windows
 ## How to Run
 **Requirements**  
 - Java 8 
+- JAVA_HOME environment variable pointing correctly to Java8 folder
+- PATH environment variable pointing correctly to Java8\bin folder
 
 **Steps to Run Application**
 1. Download the repository as a zip file
 2. Extract the project
 3. Open the command line and navigate to the deliveryservice project folder
-4. run the command mvnw spring-boot:run
+4. run the command ```mvnw spring-boot:run```
 
 ## Project Overview
 **Main Project Structure**  
@@ -64,7 +66,10 @@ Delivery
  ```
 
 
-## HTTP API Endpoints  
+## HTTP API Endpoints 
+The application will start on port 8080 when running locally  
+http://localhost:8080  
+
 **GET /delivery**  
   Response Status: 200 Ok  
   Response Body: JSON Array of Delivery  
